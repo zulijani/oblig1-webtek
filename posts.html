@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Second Greatest Webiste to Ever Exist</title>
+<style>
+    @font-face {
+        font-family: 'roboto';
+        src: url(fonts/Roboto-Regular.ttf) format('truetype');
+    }
+
+    body{
+        font-family:'roboto';
+        padding: 0;
+        margin:0;
+    }
+
+    header{
+        background-color: #2f343f;
+        color:white;
+        display: block;
+        text-align: center;
+        padding: 15px;
+    }
+    .content{
+        display:flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .logo{
+        margin-bottom: 30px;;
+    }
+
+    a, a:link, a:visited{
+        margin: 10px;
+        color: #FFFFFF;
+        text-decoration: none; 
+    }   
+    a:hover{
+        background: #0276FF;
+    }
+
+    .post {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px;
+            width: 30%;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+    }
+    footer{
+        display: flex;;
+        justify-content: center;
+        background-color: #2f343f;
+        color: #FFF;
+        padding: 25px;
+    }
+
+    a, a:link, a:visited{
+        margin: 10px;
+        color: #FFFFFF;
+        text-decoration: none; 
+    }
+
+</style>
+</head>
+<body>
+    <header>
+        <h3 class = "logo">Header Logo</h3>
+        <a href="index.html">Home</a>
+        <a href="#">Posts</a>
+        <a href="weather.html">Weather</a>
+    </header>
+
+    <div class="content" id="contentContainer">
+        <!-- Posts will be appended here. I believe it will so, atleast -->
+    </div>
+
+    <footer>
+        <p>Copyright ©</p>
+    </footer>
+
+    <script>
+        let container = document.getElementById("contentContainer");
+        let postCount = 0;
+        let limit = 12;
+        window.onload = fetchPosts; 
+        function fetchPosts(){
+            fetch("https://jsonplaceholder.typicode.com/posts?_start=" + postCount)  //fetching post from the postCount number
+                .then((response) => {
+                    if(!response.ok){
+                        throw new Error("Error with the status: " +  response.status);
+                    }
+                    return response.json();
+                })
+                .then((posts) => {
+
+
+                    let i = 1;
+                    for(post of posts){
+                        if(i <= limit){    
+                            const postDiv = document.createElement("div");
+                            const title = document.createElement("h4");
+                            postDiv.className = "post";
+                            title.textContent = post.title;
+                            const paragraph = document.createElement("p");
+                            paragraph.textContent = post.body;
+                            postDiv.appendChild(title);
+                            postDiv.appendChild(paragraph);
+                            container.appendChild(postDiv);
+                        }
+                        i++;
+                    }
+                    postCount += 12; 
+                })
+        }
+        window.onscroll = function(){       //function for when the user scrolls to the bottom of the page
+            if((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight-1){ //adding a -1 one here so that the
+                fetchPosts();                                                              //function is more consistent. At least for me it is
+            }
+        };
+
+    </script>
+</body>
+</html>
